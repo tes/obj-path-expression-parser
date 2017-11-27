@@ -1,0 +1,32 @@
+{
+  "name": "obj-path-expression-parser",
+  "version": "0.0.1",
+  "description": "Parser for path expressions",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/*.js",
+    "watch": "npm run test -- -w",
+    "lint": "eslint --ext .js ./src ./tests",
+    "release:major": "npm-release major",
+    "release:minor": "npm-release minor",
+    "release:patch": "npm-release patch",
+    "precommit": "npm run lint",
+    "prepush": "npm run test"
+  },
+  "keyword": [
+  ],
+  "repository": "git@github.com:sithmel/obj-path-expression-parser.git",
+  "author": "Maurizio Lupo <maurizio.lupo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "iter-tools": "^1.4.1",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.9.0",
+    "husky": "^0.14.3",
+    "mocha": "^4.0.1",
+    "npm-release": "^1.0.0"
+  }
+}
