@@ -114,6 +114,51 @@ describe.only('parse', () => {
         ]
       });
     });
+
+    it('use escape', () => {
+      const a = parse('[a\\[b\\]c]');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'escapedFragment', fragment: 'a[b]c' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use escape before regulard token', () => {
+      const a = parse('[a\\b]');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'escapedFragment', fragment: 'a\\b' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use double escape', () => {
+      const a = parse('[a\\\\]');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'escapedFragment', fragment: 'a\\\\' }
+            ]
+          }
+        ]
+      });
+    });
   });
 
   describe('customFragment', () => {
@@ -157,5 +202,51 @@ describe.only('parse', () => {
         ]
       });
     });
+
+    it('use escape', () => {
+      const a = parse('{a\\{b\\}c}');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'customFragment', fragment: 'a{b}c' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use escape before regulard token', () => {
+      const a = parse('{a\\b}');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'customFragment', fragment: 'a\\b' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use double escape', () => {
+      const a = parse('{a\\\\}');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'customFragment', fragment: 'a\\\\' }
+            ]
+          }
+        ]
+      });
+    });
+
   });
 });
