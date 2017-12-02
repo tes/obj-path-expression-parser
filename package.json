@@ -13,14 +13,14 @@
     "precommit": "npm run lint",
     "prepush": "npm run test"
   },
-  "keyword": [
-  ],
+  "keyword": [],
   "repository": "git@github.com:sithmel/obj-path-expression-parser.git",
   "author": "Maurizio Lupo <maurizio.lupo@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "iter-tools": "^1.4.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "micromatch": "^3.1.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",
