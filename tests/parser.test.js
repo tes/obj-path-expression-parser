@@ -2,12 +2,12 @@
 const { assert } = require('chai');
 const parse = require('../lib/parser');
 
-describe.only('parse', () => {
+describe('parse', () => {
   it('throws an exception if no string', () =>
     assert.throws(() => parse({}), /should be a string/));
 
   it('throws an exception if begins with parenthesis', () =>
-    assert.throws(() => parse(']'), /can't start with/));
+    assert.throws(() => parse(']'), /can't contain/));
 
   it('throws an exception leaving open parenthesis', () => {
     assert.throws(() => parse('{1'), /requires "}"/);
@@ -248,5 +248,137 @@ describe.only('parse', () => {
       });
     });
 
+  });
+
+  describe('recursive pathExpressions', () => {
+    it('use path expressions as fragment', () => {
+      const a = parse('a(b,c)');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'unescapedFragment', fragment: 'a' },
+              {
+                _type: 'pathExpressions',
+                expressions: [
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'b' }
+                    ]
+                  },
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'c' }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use path expressions as fragment (2)', () => {
+      const a = parse('a(b,c)d');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'unescapedFragment', fragment: 'a' },
+              {
+                _type: 'pathExpressions',
+                expressions: [
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'b' }
+                    ]
+                  },
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'c' }
+                    ]
+                  }
+                ]
+              },
+              { _type: 'unescapedFragment', fragment: 'd' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use path expressions as fragment (2) with escaped', () => {
+      const a = parse('[a]([b],[c])[d]');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              { _type: 'escapedFragment', fragment: 'a' },
+              {
+                _type: 'pathExpressions',
+                expressions: [
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'escapedFragment', fragment: 'b' }
+                    ]
+                  },
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'escapedFragment', fragment: 'c' }
+                    ]
+                  }
+                ]
+              },
+              { _type: 'escapedFragment', fragment: 'd' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('use path expressions as fragment (start)', () => {
+      const a = parse('(b,c)d');
+      assert.deepEqual(a, {
+        _type: 'pathExpressions',
+        expressions: [
+          {
+            _type: 'pathExpression',
+            expression: [
+              {
+                _type: 'pathExpressions',
+                expressions: [
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'b' }
+                    ]
+                  },
+                  {
+                    _type: 'pathExpression',
+                    expression: [
+                      { _type: 'unescapedFragment', fragment: 'c' }
+                    ]
+                  }
+                ]
+              },
+              { _type: 'unescapedFragment', fragment: 'd' }
+            ]
+          }
+        ]
+      });
+    });
   });
 });
