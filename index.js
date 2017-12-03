@@ -1,7 +1,7 @@
-const expandFromATS = require('./lib/expandFromATS');
-const parse = require('./lib/parser');
+const iterPathExpressions = require('./lib/iterPathExpressions')
+const parse = require('./lib/parser')
 
-module.exports = function expandPathExpressions(pathStr, obj) {
-  const ats = parse(pathStr);
-  return expandFromATS(ats, obj);
-};
+module.exports = function * expandPathExpressions (pathStr, obj) {
+  const pathExpressions = parse(pathStr)
+  yield * iterPathExpressions([[]], pathExpressions, obj)
+}

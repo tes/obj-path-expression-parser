@@ -1,26 +1,26 @@
 /* eslint-env node, mocha */
-const { assert } = require('chai');
-const parse = require('../lib/parser');
+const { assert } = require('chai')
+const parse = require('../lib/parser')
 
 describe('parse', () => {
   it('throws an exception if no string', () =>
-    assert.throws(() => parse({}), /should be a string/));
+    assert.throws(() => parse({}), /should be a string/))
 
   it('throws an exception if begins with parenthesis', () =>
-    assert.throws(() => parse(']'), /can't contain/));
+    assert.throws(() => parse(']'), /can't contain/))
 
   it('throws an exception leaving open parenthesis', () => {
-    assert.throws(() => parse('{1'), /requires "}"/);
-    assert.throws(() => parse('[1'), /requires "]"/);
-    assert.throws(() => parse('(1'), /should end with "\)"/);
-  });
+    assert.throws(() => parse('{1'), /requires "}"/)
+    assert.throws(() => parse('[1'), /requires "]"/)
+    assert.throws(() => parse('(1'), /should end with "\)"/)
+  })
 
   it('throws an exception with spaces in unescaped fragments', () =>
-    assert.throws(() => parse('hello world'), /Spaces are not allowed/));
+    assert.throws(() => parse('hello world'), /Spaces are not allowed/))
 
   describe('unescapedFragment', () => {
     it('convert simple path', () => {
-      const a = parse('hello.world');
+      const a = parse('hello.world')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -32,11 +32,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('convert simple path (single item)', () => {
-      const a = parse('hello');
+      const a = parse('hello')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -47,11 +47,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('convert 2 simple paths', () => {
-      const a = parse('hello.world,1.2');
+      const a = parse('hello.world,1.2')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -70,13 +70,13 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('escapedFragment', () => {
     it('parse escaped', () => {
-      const a = parse('hello[world],[1]2');
+      const a = parse('hello[world],[1]2')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -95,11 +95,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('parse adjacent escaped', () => {
-      const a = parse('[1 x][2][3]');
+      const a = parse('[1 x][2][3]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -112,11 +112,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use escape', () => {
-      const a = parse('[a\\[b\\]c]');
+      const a = parse('[a\\[b\\]c]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -127,11 +127,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use escape before regulard token', () => {
-      const a = parse('[a\\b]');
+      const a = parse('[a\\b]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -142,11 +142,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use double escape', () => {
-      const a = parse('[a\\\\]');
+      const a = parse('[a\\\\]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -157,13 +157,13 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('customFragment', () => {
     it('parse escaped', () => {
-      const a = parse('hello{world},{1}2[3]');
+      const a = parse('hello{world},{1}2[3]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -183,11 +183,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('parse adjacent escaped', () => {
-      const a = parse('{1 x}{2}{3}');
+      const a = parse('{1 x}{2}{3}')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -200,11 +200,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use escape', () => {
-      const a = parse('{a\\{b\\}c}');
+      const a = parse('{a\\{b\\}c}')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -215,11 +215,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use escape before regulard token', () => {
-      const a = parse('{a\\b}');
+      const a = parse('{a\\b}')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -230,11 +230,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use double escape', () => {
-      const a = parse('{a\\\\}');
+      const a = parse('{a\\\\}')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -245,14 +245,13 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
-
-  });
+      })
+    })
+  })
 
   describe('recursive pathExpressions', () => {
     it('use path expressions as fragment', () => {
-      const a = parse('a(b,c)');
+      const a = parse('a(b,c)')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -280,11 +279,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use path expressions as fragment (2)', () => {
-      const a = parse('a(b,c)d');
+      const a = parse('a(b,c)d')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -313,11 +312,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use path expressions as fragment (2) with escaped', () => {
-      const a = parse('[a]([b],[c])[d]');
+      const a = parse('[a]([b],[c])[d]')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -346,11 +345,11 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
+      })
+    })
 
     it('use path expressions as fragment (start)', () => {
-      const a = parse('(b,c)d');
+      const a = parse('(b,c)d')
       assert.deepEqual(a, {
         _type: 'pathExpressions',
         expressions: [
@@ -378,7 +377,7 @@ describe('parse', () => {
             ]
           }
         ]
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})
