@@ -2,7 +2,11 @@
 const { assert } = require('chai')
 const pathExpressionParser = require('..')
 
-describe.only('pathExpressionParser', () => {
+describe('pathExpressionParser', () => {
+  it('no expressions', () => {
+    const iter = pathExpressionParser('', { 'hello': 1 })
+    assert.deepEqual(Array.from(iter), [])
+  })
   it('one expression', () => {
     const iter = pathExpressionParser('hello', { hello: 1 })
     assert.deepEqual(Array.from(iter), [['hello']])
@@ -30,6 +34,15 @@ describe.only('pathExpressionParser', () => {
       ['hello', 'world'], ['goodbye', 'world'], ['ciao', 'world'],
       ['hello', 'mars'], ['goodbye', 'mars'], ['ciao', 'mars']])
   })
+  it('nested pathExpressions', () => {
+    const iter = pathExpressionParser('(products,services(subscriptions,transactions))prices',
+      { products: { prices: 10 }, services: { subscriptions: { prices: 20 }, transactions: { prices: 20 } } })
+    assert.deepEqual(Array.from(iter), [
+      ['products', 'prices'],
+      ['services', 'subscriptions', 'prices'],
+      ['services', 'transactions', 'prices']
+    ])
+  })
   it('globbing', () => {
     const iter = pathExpressionParser('(hello,goodbye,ciao)[*]',
       { hello: { world: 2, mars: 3 }, goodbye: { world: 2, mars: 3 }, ciao: { world: 2, mars: 3 } })
@@ -47,5 +60,16 @@ describe.only('pathExpressionParser', () => {
     const iter = pathExpressionParser('numbers[1:-1]',
       { numbers: [0, 1, 2, 3] })
     assert.deepEqual(Array.from(iter), [['numbers', 1], ['numbers', 2]])
+  })
+  it('custom functions', () => {
+    const customFunctions = {
+      mod: (path, funcArgument, parent) => {
+        const n = parseInt(funcArgument, 10)
+        return parent % n === 0 ? [path] : []
+      }
+    }
+    const iter = pathExpressionParser('numbers[:]{mod 3}',
+      { numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8] }, customFunctions)
+    assert.deepEqual(Array.from(iter), [['numbers', 0], ['numbers', 3], ['numbers', 6]])
   })
 })
