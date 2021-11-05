@@ -1,6 +1,6 @@
 {
   "name": "obj-path-expression-parser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Parser for path expressions",
   "main": "index.js",
   "scripts": {
