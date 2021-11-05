@@ -72,4 +72,9 @@ describe('pathExpressionParser', () => {
       { numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8] }, customFunctions)
     assert.deepEqual(Array.from(iter), [['numbers', 0], ['numbers', 3], ['numbers', 6]])
   })
+  it('or', () => {
+    const iter = pathExpressionParser('greetings[hello|goodbye]',
+      { greetings: { hello: 'world', goodbye: 'mars', ciao: 'venus' } })
+    assert.deepEqual(Array.from(iter), [['greetings', 'hello'], ['greetings', 'goodbye']])
+  })
 })
